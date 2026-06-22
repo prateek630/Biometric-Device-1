@@ -1,0 +1,115 @@
+🔌 Wiring & Pinout
+ESP32 ↔ AS608 Fingerprint Sensor
+AS608 Pin	ESP32 Pin
+VCC	5V
+GND	GND
+TX	GPIO 16 (RX2)
+RX	GPIO 17 (TX2)
+
+UART Configuration
+
+HardwareSerial mySerial(2);
+mySerial.begin(57600, SERIAL_8N1, 16, 17);
+ESP32 ↔ DS3231 RTC Module
+DS3231 Pin	ESP32 Pin
+VCC	3.3V
+GND	GND
+SDA	GPIO 25
+SCL	GPIO 26
+
+I2C Configuration
+
+Wire.begin(25, 26);
+ESP32 ↔ SSD1306 OLED Display
+OLED Pin	ESP32 Pin
+VCC	3.3V
+GND	GND
+SDA	GPIO 25
+SCL	GPIO 26
+
+The OLED shares the same I2C bus as the DS3231 RTC.
+
+ESP32 ↔ SD Card Module
+SD Module Pin	ESP32 Pin
+VCC	3.3V
+GND	GND
+CS	GPIO 13
+SCK	GPIO 18
+MISO	GPIO 19
+MOSI	GPIO 23
+
+SPI Configuration
+
+#define SD_CS 13
+Complete System Wiring
+                     +----------------+
+                     |     ESP32      |
+                     +----------------+
+
+Fingerprint Sensor (AS608)
+---------------------------
+TX   ---------- GPIO16
+RX   ---------- GPIO17
+VCC  ---------- 5V
+GND  ---------- GND
+
+RTC Module (DS3231)
+--------------------
+SDA  ---------- GPIO25
+SCL  ---------- GPIO26
+VCC  ---------- 3.3V
+GND  ---------- GND
+
+OLED Display (SSD1306)
+-----------------------
+SDA  ---------- GPIO25
+SCL  ---------- GPIO26
+VCC  ---------- 3.3V
+GND  ---------- GND
+
+SD Card Module
+--------------
+CS   ---------- GPIO13
+SCK  ---------- GPIO18
+MISO ---------- GPIO19
+MOSI ---------- GPIO23
+VCC  ---------- 3.3V
+GND  ---------- GND
+📡 Communication Interfaces Used
+Peripheral	Interface
+AS608 Fingerprint Sensor	UART
+DS3231 RTC	I2C
+SSD1306 OLED	I2C
+SD Card Module	SPI
+Google Cloud Backend	Wi-Fi / HTTPS
+⚡ Power Requirements
+Component	Voltage
+ESP32	5V USB
+AS608 Fingerprint Sensor	5V
+DS3231 RTC	3.3V–5V
+SSD1306 OLED	3.3V
+SD Card Module	3.3V
+
+Recommended Power Supply: 5V, 2A regulated supply for stable operation when all peripherals are connected.
+
+🖼 System Block Diagram
+                    Internet
+                        │
+                        ▼
+                Google Sheets
+                        ▲
+                        │ WiFi
+                        │
++------------------------------------------------+
+|                    ESP32                       |
+|                                                |
+| UART2                  I2C            SPI      |
+|   │                     │              │       |
+|   ▼                     ▼              ▼       |
+| AS608 Fingerprint   DS3231 RTC     SD Card     |
+|                        │                       |
+|                        ▼                       |
+|                  SSD1306 OLED                  |
++------------------------------------------------+
+
+This wiring configuration is exactly aligned with the pin assignments used in the firmware source code.
